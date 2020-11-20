@@ -1,0 +1,49 @@
+const main = document.getElementById('main')
+const search = document.getElementById('search')
+const form = document.getElementById('form')
+
+
+const apiKey = "3265874a2c77ae4a04bb96236a642d2f"
+
+const url = (city)=>{
+    `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`
+}
+
+
+async function weatherAdd(city){
+  const res = await fetch(url(city),{origin:'cors'})
+  const respData = await res.json()
+
+
+  weatherPage(respData)
+}
+
+function weatherPage(data){
+  const temp = KtoC(data.main.temp)
+
+  const weather = document.createElement('div')
+  weather.classList.add('weather')
+
+  weather.innerHTML = ` <h2><img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" /> ${temp}°C <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" /></h2>
+  <small>${data.weather[0].main}</small>`
+
+  main.innerHTML = ""
+
+  main.appendChild(weather)
+
+}
+
+function KtoC(K){
+    return Math.floor(K-273.15)
+}
+
+form.addEventListener('submit',(e)=>{
+
+    const city = search.value 
+
+    if(city){
+        weatherAdd(city)
+    }
+
+ e.preventDefault()
+})
